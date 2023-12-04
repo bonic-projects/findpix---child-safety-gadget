@@ -1,8 +1,9 @@
+import 'package:findpix_flutter/ui/views/widgets/customButtomgreen.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
 import '../../../app/validators.dart';
-import '../widgets/customButton.dart';
+
 import 'register_viewmodel.dart';
 import 'register_view.form.dart';
 
@@ -68,6 +69,10 @@ class RegisterView extends StackedView<RegisterViewModel> with $RegisterView {
                         child: TextField(
                           autofocus: true,
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromARGB(255, 183, 186, 185),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30)),
                             labelText: 'Full name',
                             errorText: viewModel.nameValidationMessage,
                             errorMaxLines: 2,
@@ -84,6 +89,10 @@ class RegisterView extends StackedView<RegisterViewModel> with $RegisterView {
                         ),
                         child: TextField(
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromARGB(255, 183, 186, 185),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30)),
                             labelText: 'Email',
                             errorText: viewModel.emailValidationMessage,
                             errorMaxLines: 2,
@@ -100,6 +109,10 @@ class RegisterView extends StackedView<RegisterViewModel> with $RegisterView {
                         ),
                         child: TextField(
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromARGB(255, 183, 186, 185),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30)),
                             labelText: 'Password',
                             errorText: viewModel.passwordValidationMessage,
                             errorMaxLines: 2,
@@ -111,9 +124,9 @@ class RegisterView extends StackedView<RegisterViewModel> with $RegisterView {
                         ),
                       ),
                       const SizedBox(height: 30),
-                      CustomButton(
+                      CustomButtongreen(
                         onTap: viewModel.registerUser,
-                        text: 'Register',
+                        text: 'Sign Up',
                         isLoading: viewModel.isBusy,
                       )
                     ],

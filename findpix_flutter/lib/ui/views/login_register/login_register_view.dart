@@ -22,16 +22,24 @@ class LoginRegisterView extends StackedView<LoginRegisterViewModel> {
           children: [
             Padding(
               padding: const EdgeInsets.all(12.0),
-              child: Image.asset(
-                'assets/logo.png',
-                height: 150,
+              child: Column(
+                children: [
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 150,
+                  ),
+                  const Text(
+                    'LOGIN',
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.w900),
+                  )
+                ],
               ),
             ),
             LoginRegisterWidget(
               onLogin: viewModel.openLoginView,
               onRegister: viewModel.openRegisterView,
-              loginText: "Existing Doctor",
-              registerText: "Doctor registration",
+              loginText: "LOGIN",
+              registerText: "Sign Up",
             ),
           ],
         ),

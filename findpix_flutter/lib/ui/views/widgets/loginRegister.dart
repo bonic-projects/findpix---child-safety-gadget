@@ -21,12 +21,12 @@ class LoginRegisterWidget extends StatelessWidget {
       children: [
         CustomButton(
           onTap: onLogin,
-          text: "Login",
+          text: loginText,
           isLoading: false,
         ),
         CustomButton(
           onTap: onRegister,
-          text: "Register",
+          text: registerText,
           isLoading: false,
         ),
       ],

@@ -48,7 +48,7 @@ class RegisterViewModel extends FormViewModel {
       log.i(emailValue!);
       log.i(passwordValue!);
       FirebaseAuthenticationResult result =
-          await _firebaseAuthenticationService!.createAccountWithEmail(
+          await _firebaseAuthenticationService.createAccountWithEmail(
         email: emailValue!,
         password: passwordValue!,
       );

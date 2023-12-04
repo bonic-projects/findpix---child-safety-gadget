@@ -5,7 +5,7 @@ class FormValidators {
     }
 
     if (!value.contains(RegExp(r'((?=.*\d)(?=.*[A-z]).{6,20})'))) {
-      return 'Password should contain 6 to 20 characters and at least one digit and letter.';
+      return 'Password should contain 6 to 20 characters ';
     }
     return null;
   }

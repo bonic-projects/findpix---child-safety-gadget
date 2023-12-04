@@ -1,8 +1,9 @@
+import 'package:findpix_flutter/ui/views/widgets/customButtomgreen.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
 import '../../../app/validators.dart';
-import '../widgets/customButton.dart';
+
 import 'login_view.form.dart';
 import 'login_viewmodel.dart';
 
@@ -64,6 +65,10 @@ class LoginView extends StackedView<LoginViewModel> with $LoginView {
                         child: TextField(
                           autofocus: true,
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromARGB(255, 183, 186, 185),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30)),
                             labelText: 'Email',
                             errorText: viewModel.emailValidationMessage,
                             errorMaxLines: 2,
@@ -80,6 +85,10 @@ class LoginView extends StackedView<LoginViewModel> with $LoginView {
                         ),
                         child: TextField(
                           decoration: InputDecoration(
+                            filled: true,
+                            fillColor: const Color.fromARGB(255, 183, 186, 185),
+                            border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(30)),
                             labelText: 'Password',
                             errorText: viewModel.passwordValidationMessage,
                             errorMaxLines: 2,
@@ -91,11 +100,11 @@ class LoginView extends StackedView<LoginViewModel> with $LoginView {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      CustomButton(
+                      CustomButtongreen(
                         onTap: viewModel.authenticateUser,
                         text: 'Login',
                         isLoading: viewModel.isBusy,
-                      )
+                      ),
                     ],
                   ),
                 ),

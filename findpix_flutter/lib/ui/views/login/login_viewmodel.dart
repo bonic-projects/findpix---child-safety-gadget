@@ -26,7 +26,7 @@ class LoginViewModel extends FormViewModel {
       log.i(emailValue!);
       log.i(passwordValue!);
       FirebaseAuthenticationResult result =
-          await _firebaseAuthenticationService!.loginWithEmail(
+          await _firebaseAuthenticationService.loginWithEmail(
         email: emailValue!,
         password: passwordValue!,
       );

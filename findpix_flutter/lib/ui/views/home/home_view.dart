@@ -1,6 +1,7 @@
+import 'package:findpix_flutter/ui/views/widgets/bottomnavBar.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
-import 'package:findpix_flutter/ui/common/app_colors.dart';
+
 import 'package:findpix_flutter/ui/common/ui_helpers.dart';
 
 import 'home_viewmodel.dart';
@@ -15,62 +16,100 @@ class HomeView extends StackedView<HomeViewModel> {
     Widget? child,
   ) {
     return Scaffold(
+      bottomNavigationBar: const CustomBottomNavBar(),
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 25.0),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                verticalSpaceLarge,
-                Column(
-                  children: [
-                    const Text(
-                      'FindPix',
-                      style: TextStyle(
-                        fontSize: 35,
-                        fontWeight: FontWeight.w900,
+          child: Column(
+            children: [
+              verticalSpaceLarge,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Image.asset(
+                    'assets/logo.png',
+                    height: 70,
+                  ),
+                  const Column(
+                    children: [
+                      Text('Status: Online'),
+                      Text('Battery: 80%'),
+                    ],
+                  )
+                ],
+              ),
+              const Padding(
+                padding: EdgeInsets.only(top: 10),
+                child: SizedBox(
+                  height: 100,
+                  width: 300,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Hi Good Morning',
+                        style: TextStyle(fontSize: 30),
                       ),
-                    ),
-                    verticalSpaceMedium,
-                    MaterialButton(
-                      color: Colors.black,
-                      onPressed: viewModel.incrementCounter,
-                      child: Text(
-                        viewModel.counterLabel,
-                        style: const TextStyle(color: Colors.white),
+                      Text(
+                        'Sarah!👋',
+                        style: TextStyle(fontSize: 30),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    MaterialButton(
-                      color: kcDarkGreyColor,
-                      onPressed: viewModel.showDialog,
-                      child: const Text(
-                        'Show Dialog',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
+              ),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Enter your search',
+                  prefixIcon: const Icon(Icons.search),
+                  contentPadding:
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                  filled: true,
+                  fillColor: Colors.grey[200],
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: Container(
+                  // Adjust the height of each Card
+                  decoration: const BoxDecoration(
+                    color: Color.fromARGB(255, 253, 253, 253),
+                    // Adjust the border radius
+                  ),
+                  child: ListView(
+                    children: const [
+                      ListItemCard(
+                        text: "REAL TIME LOCATION",
+                        image: "assets/Rectangle.png",
+                        isLeft: false,
+                        color: 'green',
                       ),
-                    ),
-                    MaterialButton(
-                      color: kcDarkGreyColor,
-                      onPressed: viewModel.showBottomSheet,
-                      child: const Text(
-                        'Show Bottom Sheet',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
+                      ListItemCard(
+                        text: "CHILD ACTIVITY",
+                        image: "assets/Rectangle1.png",
+                        isLeft: true,
+                        color: 'green',
                       ),
-                    ),
-                  ],
-                )
-              ],
-            ),
+                      ListItemCard(
+                        text: "DEVICE SETTINGS",
+                        image: "assets/Rectangle2.png",
+                        isLeft: false,
+                        color: 'red',
+                      ),
+                      ListItemCard(
+                        text: "EMERGENCY HELPLINE",
+                        image: "assets/Rectangle3.png",
+                        isLeft: true,
+                        color: 'red',
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -82,4 +121,55 @@ class HomeView extends StackedView<HomeViewModel> {
     BuildContext context,
   ) =>
       HomeViewModel();
+}
+
+class ListItemCard extends StatelessWidget {
+  final String text;
+  final String image;
+  final bool isLeft;
+  final String color;
+  const ListItemCard({
+    super.key,
+    required this.text,
+    required this.image,
+    required this.isLeft,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15), // Adjust the border radius
+      ),
+      // Background color of each ListTile
+      child: Row(
+        children: [
+          if (isLeft)
+            SizedBox(height: 150, width: 170, child: Center(child: Text(text))),
+          SizedBox(
+            height: 150,
+            width: 164,
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Image.asset(
+                image, // Adjust the image path
+                fit: BoxFit.cover, // Adjust the fit of the image within the box
+              ),
+            ),
+          ),
+          if (!isLeft)
+            SizedBox(
+                height: 150,
+                width: 164,
+                child: Center(
+                  child: Text(
+                    text,
+                    style: const TextStyle(fontSize: 15),
+                  ),
+                ))
+        ],
+      ),
+    );
+  }
 }

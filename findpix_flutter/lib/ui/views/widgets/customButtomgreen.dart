@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../common/app_colors.dart';
-
-class CustomButton extends StatelessWidget {
+class CustomButtongreen extends StatelessWidget {
   final void Function()? onTap;
   final String text;
   final bool isLoading;
-  const CustomButton({
+  const CustomButtongreen({
     Key? key,
     required this.onTap,
     required this.text,
@@ -30,7 +28,7 @@ class CustomButton extends StatelessWidget {
                 constraints: const BoxConstraints(minWidth: 120),
                 child: Container(
                     decoration: const BoxDecoration(
-                        color: kcPrimaryColor,
+                        color: Colors.greenAccent,
                         // border: Border.all(
                         //   color: kcPrimaryColor,
                         // ),

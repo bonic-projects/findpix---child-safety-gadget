@@ -33,6 +33,12 @@ class MainApp extends StatelessWidget {
       navigatorObservers: [
         StackedService.routeObserver,
       ],
+      // theme: ThemeData(
+      //   fontFamily: 'Poppins',
+      //   primarySwatch: Colors.red,
+      //   // backgroundColor: kBackgroundColor,
+      //   visualDensity: VisualDensity.adaptivePlatformDensity,
+      // ),
     );
   }
 }
