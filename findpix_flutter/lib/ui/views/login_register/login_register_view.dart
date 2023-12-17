@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
-import '../widgets/loginRegister.dart';
+import '../../widgets/loginRegister.dart';
 import 'login_register_viewmodel.dart';
 
 class LoginRegisterView extends StackedView<LoginRegisterViewModel> {

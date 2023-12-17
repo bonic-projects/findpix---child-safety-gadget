@@ -13,13 +13,25 @@ import '../ui/bottom_sheets/success/success_sheet.dart';
 import '../ui/views/login/login_view.dart';
 import '../ui/views/login_register/login_register_view.dart';
 import '../ui/views/register/register_view.dart';
+import 'package:findpix_flutter/ui/views/notification/notification_view.dart';
+import 'package:findpix_flutter/ui/views/profile/profile_view.dart';
+import 'package:findpix_flutter/ui/views/real_time/real_time_view.dart';
+import 'package:findpix_flutter/ui/views/child_activity/child_activity_view.dart';
+import 'package:findpix_flutter/ui/views/device_settings/device_settings_view.dart';
+import 'package:findpix_flutter/ui/views/emergency/emergency_view.dart';
 // @stacked-import
 
 @StackedApp(
   routes: [
     MaterialRoute(page: HomeView),
     MaterialRoute(page: StartupView),
-    // @stacked-route
+    MaterialRoute(page: NotificationView),
+    MaterialRoute(page: ProfileView),
+    MaterialRoute(page: RealTimeView),
+    MaterialRoute(page: ChildActivityView),
+    MaterialRoute(page: DeviceSettingsView),
+    MaterialRoute(page: EmergencyView),
+// @stacked-route
     MaterialRoute(page: LoginRegisterView),
     MaterialRoute(page: LoginView),
     MaterialRoute(page: RegisterView),

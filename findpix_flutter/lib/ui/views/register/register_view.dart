@@ -1,4 +1,4 @@
-import 'package:findpix_flutter/ui/views/widgets/customButtomgreen.dart';
+import 'package:findpix_flutter/ui/widgets/customButtomgreen.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked/stacked_annotations.dart';
