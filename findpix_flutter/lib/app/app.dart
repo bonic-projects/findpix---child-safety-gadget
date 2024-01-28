@@ -1,3 +1,4 @@
+import 'package:findpix_flutter/services/database_service.dart';
 import 'package:findpix_flutter/ui/bottom_sheets/notice/notice_sheet.dart';
 import 'package:findpix_flutter/ui/dialogs/info_alert/info_alert_dialog.dart';
 import 'package:findpix_flutter/ui/views/home/home_view.dart';
@@ -45,6 +46,7 @@ import 'package:findpix_flutter/ui/views/emergency/emergency_view.dart';
     LazySingleton(classType: FirebaseAuthenticationService),
     LazySingleton(classType: FirestoreService),
     LazySingleton(classType: UserService),
+    LazySingleton(classType: DatabaseService),
   ],
   bottomsheets: [
     StackedBottomsheet(classType: NoticeSheet),

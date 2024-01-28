@@ -55,6 +55,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '1082732074690',
     projectId: 'findpix-5c4a0',
     authDomain: 'findpix-5c4a0.firebaseapp.com',
+    databaseURL: 'https://findpix-5c4a0-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'findpix-5c4a0.appspot.com',
   );
 
@@ -63,6 +64,7 @@ class DefaultFirebaseOptions {
     appId: '1:1082732074690:android:2143baa3feb34ca2b10d5b',
     messagingSenderId: '1082732074690',
     projectId: 'findpix-5c4a0',
+    databaseURL: 'https://findpix-5c4a0-default-rtdb.asia-southeast1.firebasedatabase.app',
     storageBucket: 'findpix-5c4a0.appspot.com',
   );
 }

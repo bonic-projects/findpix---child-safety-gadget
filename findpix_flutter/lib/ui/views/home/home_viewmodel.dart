@@ -2,18 +2,28 @@ import 'package:findpix_flutter/app/app.bottomsheets.dart';
 import 'package:findpix_flutter/app/app.dialogs.dart';
 import 'package:findpix_flutter/app/app.locator.dart';
 import 'package:findpix_flutter/app/app.router.dart';
+import 'package:findpix_flutter/services/database_service.dart';
 import 'package:findpix_flutter/services/user_service.dart';
 import 'package:findpix_flutter/ui/common/app_strings.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 
 import '../../../models/appuser.dart';
+import '../../../models/device.dart';
 
-class HomeViewModel extends BaseViewModel {
+class HomeViewModel extends ReactiveViewModel {
   final _dialogService = locator<DialogService>();
   final _bottomSheetService = locator<BottomSheetService>();
   final _navigationService = locator<NavigationService>();
   final _userService = locator<UserService>();
+  final _databaseService = locator<DatabaseService>();
+
+  DeviceReading? get node => _databaseService.node;
+
+  @override
+  List<ListenableServiceMixin> get listenableServices =>
+      [_databaseService];
+
 
   String get counterLabel => 'Counter is: $_counter';
 

@@ -4,6 +4,7 @@ import 'package:stacked/stacked.dart';
 
 import 'package:findpix_flutter/ui/common/ui_helpers.dart';
 
+import '../../smart_widgets/is_online/online_status.dart';
 import 'home_viewmodel.dart';
 
 class HomeView extends StackedView<HomeViewModel> {
@@ -30,9 +31,9 @@ class HomeView extends StackedView<HomeViewModel> {
                     'assets/logo.png',
                     height: 70,
                   ),
-                  const Column(
+                   const Column(
                     children: [
-                      Text('Status: Online'),
+                      IsOnlineWidget(),
                       Text('Battery: 80%'),
                     ],
                   )

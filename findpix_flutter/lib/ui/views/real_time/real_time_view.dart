@@ -20,7 +20,38 @@ class RealTimeView extends StackedView<RealTimeViewModel> {
               hintText: 'search', prefixIcon: Icon(Icons.search)),
         ),
       ),
-      body: const SafeArea(child: Center(child: Text('Location'))),
+      body:  SafeArea(child: Center(child: Column(
+        children: [
+          // const Text('Location'),
+          if (viewModel.node != null)
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: SizedBox(
+                height: 500,
+                child: GoogleMap(
+                  onMapCreated: (controller) {},
+                  onTap: (LatLng location) {},
+                  initialCameraPosition: CameraPosition(
+                    target:
+                    LatLng(viewModel.node!.lat, viewModel.node!.long),
+                    // Default map position
+                    zoom: 15.0,
+                  ),
+                  markers: {
+                    Marker(
+                      markerId: const MarkerId("picked_location"),
+                      position:
+                      LatLng(viewModel.node!.lat, viewModel.node!.long),
+                      infoWindow: const InfoWindow(
+                        title: "Current location",
+                      ),
+                    ),
+                  },
+                ),
+              ),
+            ),
+        ],
+      ))),
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(
