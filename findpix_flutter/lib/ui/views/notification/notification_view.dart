@@ -19,20 +19,18 @@ class NotificationView extends StackedView<NotificationViewModel> {
         ),
         bottomNavigationBar: const CustomBottomNavBar(index: 1),
         backgroundColor: Theme.of(context).colorScheme.background,
-        body: ListView(
-          children: const [
-            ListItemChat(
-                text: 'ACtivity Anomoly', subtitle: 'Abnormal waking speed'),
-            ListItemChat(
-                text: 'Boundary beach',
-                subtitle: 'breached boundary at 21 August'),
-            ListItemChat(
-                text: 'Boundary beach',
-                subtitle: 'breached boundary at 23 August'),
-            ListItemChat(
-                text: 'ACtivity Anomoly', subtitle: 'Abnormal waking speed'),
-          ],
-        ));
+      body: viewModel.data !=null  ? ListView.builder(
+        itemCount: viewModel.data!.length,
+        itemBuilder: (context, index) {
+          final notification = viewModel.data![index];
+          return
+            ListItemChat(onDelete: (){
+              viewModel.deleteNotification(notification);
+            },text: notification.title, subtitle: notification.description, time: notification.time.toString(),);
+
+        },
+      ) : const Center(child: CircularProgressIndicator()),
+    );
   }
 
   @override
@@ -45,8 +43,10 @@ class NotificationView extends StackedView<NotificationViewModel> {
 class ListItemChat extends StatelessWidget {
   final String text;
   final String subtitle;
+  final String time;
+  final VoidCallback onDelete;
 
-  const ListItemChat({super.key, required this.text, required this.subtitle});
+  const ListItemChat({super.key, required this.text, required this.subtitle, required this.time, required this.onDelete,});
 
   @override
   Widget build(BuildContext context) {
@@ -60,8 +60,9 @@ class ListItemChat extends StatelessWidget {
         leading: const Icon(Icons.message), // Icon on the left side
         title: Text(text), // Adjust the chat text
         subtitle: Text(subtitle), // Adjust the last message text
+        trailing: IconButton(onPressed: onDelete, icon: const Icon(Icons.delete)),
         onTap: () {
-          // Handle tapping on the chat item
+
         },
       ),
     );

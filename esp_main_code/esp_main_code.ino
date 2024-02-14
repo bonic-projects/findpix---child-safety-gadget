@@ -28,8 +28,8 @@ char pass[] = "";
 //NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
 //NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
-//GSM Module RX pin to ESP32 2
-//GSM Module TX pin to ESP32 4
+//GSM Module RX pin to ESP32 0
+//GSM Module TX pin to ESP32 1
 #define rxPin 0
 #define txPin 1
 HardwareSerial sim800(1);
@@ -61,7 +61,7 @@ void setup() {
   sim800.begin(115200, SERIAL_8N1, D0, D1);
   Serial.println("SIM800L serial initialize");
 
-  neogps.begin(9600, SERIAL_8N1, RXD2, TXD2);
+  neogps.begin(9600, SERIAL_8N1, 3, 2); 
   Serial.println("neogps serial initialize");
   delay(3000);
   
@@ -108,16 +108,16 @@ void loop() {
   
   //NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
   //Serial.print(F("Waiting for network..."));
-  //if (!modem.waitForNetwork()) {
-    //Serial.println(" fail");
-    //delay(1000);
-    //return;
-  //}
-  //Serial.println(" OK");
+  if (!modem.waitForNetwork()) {
+    Serial.println(" fail");
+    delay(1000);
+    return;
+  }
+  Serial.println(" OK");
   //NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN
 
-      gps_loop();
-      mpuLoop();
+      // gps_loop();
+      // mpuLoop();
     
   // //NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN------------------------------------------------------------
   // Serial.print(F("Connecting to "));
@@ -245,7 +245,7 @@ void gps_loop()
   //POST  Add to a list of data in our Firebase database. Every time we send a POST request, the Firebase client generates a unique key, like messages/users/<unique-id>/<data>
   //https://firebase.google.com/docs/database/rest/save-data
   
-  // PostToFirebase("PATCH", FIREBASE_PATH, gpsData, &http_client);-----------------------------
+  PostToFirebase("PATCH", FIREBASE_PATH, gpsData, &http_client);//-----------------------------
   
 
   }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import '../../../models/boundary.dart';
 import 'real_time_viewmodel.dart';
 
 class RealTimeView extends StackedView<RealTimeViewModel> {
@@ -66,7 +67,21 @@ class RealTimeView extends StackedView<RealTimeViewModel> {
         onTap: (index) {
           if (index == 0) {
             // Add onTap functionality for "Add" here
-            _showAddBottomSheet(context);
+
+            showModalBottomSheet(
+              context: context,
+              builder: (BuildContext context) {
+                return BoundaryInputBottomSheet(
+                  onSubmit: (Boundary boundary) {
+                    // Handle the submitted boundary object here
+                    viewModel.updateBoundary(boundary);
+                    // You can do anything with the boundary object, such as sending it to Firestore
+                  },
+                );
+              },
+            );
+
+
           } else if (index == 1) {
             // Add onTap functionality for "Recent" here
             // For now, just print a message
@@ -85,161 +100,127 @@ class RealTimeView extends StackedView<RealTimeViewModel> {
       RealTimeViewModel();
 }
 
-void _showAddBottomSheet(BuildContext context) {
-  TextEditingController boundaryNameController = TextEditingController();
-  TextEditingController selectedDateController = TextEditingController();
-  TextEditingController startTimeController = TextEditingController();
-  TextEditingController endTimeController = TextEditingController();
-  TextEditingController locationController = TextEditingController();
 
-  DateTime? selectedDate;
-  TimeOfDay? selectedStartTime = TimeOfDay.now();
-  TimeOfDay? selectedEndTime = TimeOfDay.now();
 
-  showModalBottomSheet(
-    context: context,
-    builder: (BuildContext context) {
-      return SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              'Add Item',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 20),
-            // 1. Boundary Name Text Field
-            TextFormField(
-              controller: boundaryNameController,
-              decoration: InputDecoration(
-                labelText: 'Boundary Name',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-// 2. Date Picker TextField
-            InkWell(
-              onTap: () async {
-                DateTime? picked = await showDatePicker(
-                  context: context,
-                  initialDate: selectedDate ?? DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2101),
-                );
+class BoundaryInputBottomSheet extends StatefulWidget {
+  final Function(Boundary boundary) onSubmit;
 
-                if (picked != null) {
-                  setState(() {
-                    selectedDate = picked;
-                    selectedDateController.text =
-                        "${picked.year}-${picked.month}-${picked.day}";
-                  });
-                }
-              },
-              child: AbsorbPointer(
-                child: TextFormField(
-                  controller: selectedDateController,
-                  decoration: InputDecoration(
-                    labelText: 'Select Date',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+  const BoundaryInputBottomSheet({Key? key, required this.onSubmit}) : super(key: key);
 
-            const SizedBox(height: 10),
-            // 3. Start Time Picker TextField
-            InkWell(
-              onTap: () async {
-                TimeOfDay? picked = await showTimePicker(
-                  context: context,
-                  initialTime: selectedStartTime ?? TimeOfDay.now(),
-                );
-
-                if (picked != null) {
-                  setState(() {
-                    selectedStartTime = picked;
-                    startTimeController.text =
-                        "${picked.hour}:${picked.minute}";
-                  });
-                }
-              },
-              child: AbsorbPointer(
-                child: TextFormField(
-                  controller: startTimeController,
-                  decoration: InputDecoration(
-                    labelText: 'Select Start Time',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            // 4. End Time Picker TextField
-            InkWell(
-              onTap: () async {
-                TimeOfDay? picked = await showTimePicker(
-                  context: context,
-                  initialTime: selectedEndTime ?? TimeOfDay.now(),
-                );
-
-                if (picked != null) {
-                  setState(() {
-                    selectedEndTime = picked;
-                    endTimeController.text = "${picked.hour}:${picked.minute}";
-                  });
-                }
-              },
-              child: AbsorbPointer(
-                child: TextFormField(
-                  controller: endTimeController,
-                  decoration: InputDecoration(
-                    labelText: 'Select End Time',
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-            // 5. Search by Location Text Field
-            TextFormField(
-              controller: locationController,
-              decoration: InputDecoration(
-                labelText: '// geo- fencing is here ',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            // 6. Submit Button
-            ElevatedButton(
-              onPressed: () {
-                // Perform action when "Submit" button is pressed in the bottom sheet
-                print('Boundary Name: ${boundaryNameController.text}');
-                print('Selected Date: $selectedDate');
-                print('Selected Start Time: $selectedStartTime');
-                print('Selected End Time: $selectedEndTime');
-                print('Location: ${locationController.text}');
-
-                Navigator.pop(context); // Close the bottom sheet
-              },
-              child: const Text('Submit'),
-            ),
-          ],
-        ),
-      );
-    },
-  );
+  @override
+  _BoundaryInputBottomSheetState createState() => _BoundaryInputBottomSheetState();
 }
 
-void setState(Null Function() param0) {}
+class _BoundaryInputBottomSheetState extends State<BoundaryInputBottomSheet> {
+  late TextEditingController _nameController;
+  late TextEditingController _kilometerController;
+  late DateTime _startDate;
+  late DateTime _endDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _nameController = TextEditingController();
+    _kilometerController = TextEditingController();
+    _startDate = DateTime.now();
+    _endDate = DateTime.now().add(Duration(days: 7));
+  }
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    _kilometerController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          TextField(
+            controller: _nameController,
+            decoration: InputDecoration(labelText: 'Name'),
+          ),
+          SizedBox(height: 16),
+          TextField(
+            controller: _kilometerController,
+            decoration: InputDecoration(labelText: 'Kilometer'),
+            keyboardType: TextInputType.number,
+          ),
+          SizedBox(height: 16),
+          ListTile(
+            title: Text('Start Date & Time'),
+            subtitle: Text('${_startDate.toString()}'),
+            onTap: () async {
+              DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: _startDate,
+                firstDate: DateTime.now(),
+                lastDate: DateTime(2101),
+              );
+              if (pickedDate != null) {
+                TimeOfDay? pickedTime = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.now(),
+                );
+                if (pickedTime != null) {
+                  setState(() {
+                    _startDate = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
+                  });
+                }
+              }
+            },
+          ),
+          ListTile(
+            title: Text('End Date & Time'),
+            subtitle: Text('${_endDate.toString()}'),
+            onTap: () async {
+              DateTime? pickedDate = await showDatePicker(
+                context: context,
+                initialDate: _endDate,
+                firstDate: DateTime.now(),
+                lastDate: DateTime(2101),
+              );
+              if (pickedDate != null) {
+                TimeOfDay? pickedTime = await showTimePicker(
+                  context: context,
+                  initialTime: TimeOfDay.now(),
+                );
+                if (pickedTime != null) {
+                  setState(() {
+                    _endDate = DateTime(pickedDate.year, pickedDate.month, pickedDate.day, pickedTime.hour, pickedTime.minute);
+                  });
+                }
+              }
+            },
+          ),
+          SizedBox(height: 16),
+          ElevatedButton(
+            onPressed: () {
+              String name = _nameController.text.trim();
+              double kilometer = double.tryParse(_kilometerController.text) ?? 0.0;
+              if (name.isNotEmpty && kilometer > 0) {
+                widget.onSubmit(Boundary(
+                  id: '',
+                  name: name,
+                  startDateTime: _startDate,
+                  endDateTime: _endDate,
+                  kilometer: kilometer,
+                  currentLat: 0.0,
+                  currentLong: 0.0,
+                ));
+                Navigator.of(context).pop();
+              } else {
+                // Show error message or handle invalid input
+              }
+            },
+            child: Text('Submit'),
+          ),
+        ],
+      ),
+    );
+  }
+}

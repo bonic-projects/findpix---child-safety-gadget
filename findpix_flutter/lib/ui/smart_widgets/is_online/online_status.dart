@@ -11,10 +11,10 @@ class IsOnlineWidget extends StatelessWidget {
     return ViewModelBuilder<HomeViewModel>.reactive(
       onModelReady: (model) => model.setTimer(),
       builder: (context, model, child) {
-        if (model.isOnline)
-          return Center(
+        if (model.isOnline) {
+          return const Center(
               child: Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: EdgeInsets.only(right: 8.0),
             child: Row(
               children: [
                 Text(
@@ -29,15 +29,16 @@ class IsOnlineWidget extends StatelessWidget {
               ],
             ),
           ));
-        else
+        } else {
           return Center(
               child: Padding(
             padding: const EdgeInsets.only(right: 8.0),
             child: Text(
-              'Offline',
-              style: TextStyle(color: Colors.black),
+              model.lastSeen(),
+              style: const TextStyle(color: Colors.black),
             ),
           ));
+        }
       },
       viewModelBuilder: () => HomeViewModel(),
     );

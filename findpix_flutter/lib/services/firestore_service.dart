@@ -1,11 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:stacked/stacked.dart';
 import 'package:stacked_firebase_auth/stacked_firebase_auth.dart';
 
 import '../app/app.locator.dart';
 import '../app/app.logger.dart';
 import '../models/appuser.dart';
+import '../models/boundary.dart';
+import '../models/notification.dart';
 
-class FirestoreService {
+class FirestoreService with ListenableServiceMixin {
   final log = getLogger('FirestoreApi');
   final _authenticationService = locator<FirebaseAuthenticationService>();
 
@@ -103,4 +106,112 @@ class FirestoreService {
             AppUser.fromMap(snapshot.data() as Map<String, dynamic>))
         .toList();
   }
+
+///==================================================================================================
+  final CollectionReference _notifications =
+  FirebaseFirestore.instance.collection("notifications");
+
+  Future<String?> generateNotificationId() async {
+    try {
+      // Add a document with an auto-generated ID
+      DocumentReference documentReference = _notifications.doc();
+
+      // Retrieve the auto-generated ID from the document reference
+      String documentId = documentReference.id;
+
+      // Return the generated document ID
+      return documentId;
+    } catch (e) {
+      // Handle any errors here
+      log.e("Error generating document ID: $e");
+      return null; // You might want to handle errors more gracefully
+    }
+  }
+
+  Future<void> addNotificationToFirestore(AppNotification notification) async {
+    try {
+      // Add the notification to the 'notifications' collection
+      final notDoc = _notifications.doc(notification.id);
+
+      await notDoc.set({
+        'title': notification.title,
+        'description': notification.description,
+        'time': notification.time,
+      });
+
+      log.i('Notification added successfully');
+    } catch (e) {
+      log.e('Error adding notification: $e');
+    }
+  }
+
+  Stream<List<AppNotification>> getNotificationStream() {
+    // Snapshot stream of notifications ordered by time
+    return _notifications.orderBy('time', descending: true).snapshots().map(
+          (QuerySnapshot querySnapshot) => querySnapshot.docs.map(
+            (DocumentSnapshot documentSnapshot) => AppNotification.fromMap(
+          documentSnapshot.data() as Map<String, dynamic>,
+        ),
+      ).toList(),
+    );
+  }
+
+  Future<void> deleteNotificationFromFirestore(String documentId) async {
+    try {
+      DocumentReference documentReference = _notifications.doc(documentId);
+
+      // Delete the document
+      await documentReference.delete();
+
+      log.i('Notification deleted successfully');
+    } catch (e) {
+      log.e('Error deleting notification: $e');
+    }
+  }
+
+
+  ///==================================================================================================
+  final CollectionReference _boundaries =
+  FirebaseFirestore.instance.collection("boundaries");
+  Future<void> addBoundaryToFirestore(Boundary boundary) async {
+    try {
+
+      // Convert the boundary object to a map using the toMap method
+
+      // Add the boundary to the 'boundaries' collection
+      final boundDoc = _boundaries.doc(boundary.id);
+
+      await boundDoc.set(boundary.toMap());
+
+
+      log.i('Boundary added successfully');
+    } catch (e) {
+      log.e('Error adding boundary: $e');
+    }
+
+  }
+
+
+  Boundary? _boundary;
+  Boundary? get  boundary=> _boundary;
+
+
+  void listenToBoundary(){
+    _boundaries.doc('boundary').snapshots().listen((DocumentSnapshot snapshot) {
+      if (snapshot.exists) {
+        // If the document exists, update the 'boundary' variable with the new data
+        Map<String, dynamic> data = snapshot.data() as Map<String, dynamic>;
+        Boundary boundary = Boundary.fromMap(data);
+        // Update the 'boundary' variable
+        _boundary = boundary;
+        notifyListeners();
+      } else {
+        // If the document does not exist, set the 'boundary' variable to null or handle it accordingly
+        _boundary = null;
+        notifyListeners();
+      }
+    });
+  }
+
+
 }
