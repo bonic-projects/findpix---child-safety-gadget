@@ -1,6 +1,7 @@
 import 'package:findpix_flutter/models/notification.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
+// import 'package:geolocator/geolocator.dart';
 
 import '../app/app.locator.dart';
 import '../app/app.logger.dart';
@@ -34,8 +35,17 @@ class DatabaseService with ListenableServiceMixin {
         if (event.snapshot.exists) {
           _node = DeviceReading.fromMap(event.snapshot.value as Map);
           log.v(_node?.lastSeen); //data['time']
-          if(node!=null && node!.sos){
-            showNotification("SOS ALERT!");
+          if(node!=null){
+            if(node!.sos) {
+              createNotification("SOS", "Sos alert clicked on: ${DateTime.now().toIso8601String()}");
+              showNotification("SOS ALERT!");
+            }
+            // Coordinate coord1 = Coordinate(52.5200, 13.4050); // Berlin, Germany
+            // Coordinate coord2 = Coordinate(48.8566, 2.3522); // Paris, France
+            //
+            // double distance = calculateDistance(coord1, coord2)
+
+            //
           }
           notifyListeners();
         }
@@ -45,12 +55,11 @@ class DatabaseService with ListenableServiceMixin {
     }
   }
 
-  void createNotification() async {
+  void createNotification(String title, String content) async {
     String? notId = await _firestoreService.generateNotificationId();
     if(notId!=null) {
-      _firestoreService.addNotificationToFirestore(AppNotification(title: "SOS", description: "Sos alert clicked on: ${DateTime.now().toIso8601String()}", time: DateTime.now(), id: notId,),);
+      _firestoreService.addNotificationToFirestore(AppNotification(title: title, description: content, time: DateTime.now(), id: notId,),);
     }
-
   }
 
 
@@ -58,3 +67,5 @@ class DatabaseService with ListenableServiceMixin {
     _snackbarService.showSnackbar(message: message, title: "Notification");
   }
 }
+
+

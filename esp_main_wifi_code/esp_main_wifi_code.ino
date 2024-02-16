@@ -228,7 +228,7 @@ void loop()
 
   updateData(false, temp.temperature, buttonState, accel.acceleration.x, accel.acceleration.y, accel.acceleration.z, gyro.gyro.x, gyro.gyro.y, gyro.gyro.z);
 
-  updateSerial();
+  updateSerial();A
 }
 
 static void smartDelay(unsigned long ms)
