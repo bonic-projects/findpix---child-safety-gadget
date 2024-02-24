@@ -133,11 +133,7 @@ class FirestoreService with ListenableServiceMixin {
       // Add the notification to the 'notifications' collection
       final notDoc = _notifications.doc(notification.id);
 
-      await notDoc.set({
-        'title': notification.title,
-        'description': notification.description,
-        'time': notification.time,
-      });
+      await notDoc.set(notification.toMap());
 
       log.i('Notification added successfully');
     } catch (e) {

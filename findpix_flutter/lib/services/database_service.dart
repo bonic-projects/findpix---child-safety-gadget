@@ -1,4 +1,6 @@
+import 'package:findpix_flutter/models/boundary.dart';
 import 'package:findpix_flutter/models/notification.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:stacked/stacked.dart';
 import 'package:stacked_services/stacked_services.dart';
 // import 'package:geolocator/geolocator.dart';
@@ -23,6 +25,8 @@ class DatabaseService with ListenableServiceMixin {
   DeviceReading? _node;
   DeviceReading? get node => _node;
 
+  Boundary? get boundary=> _firestoreService.boundary;
+
 
   void setupNodeListening() {
     log.i("Setting up..");
@@ -31,10 +35,10 @@ class DatabaseService with ListenableServiceMixin {
     log.i("R ${starCountRef.key}");
     try {
       starCountRef.onValue.listen((DatabaseEvent event) {
-        log.i("Reading..");
+        // log.i("Reading..");
         if (event.snapshot.exists) {
           _node = DeviceReading.fromMap(event.snapshot.value as Map);
-          log.v(_node?.lastSeen); //data['time']
+          // log.v(_node?.lastSeen); //data['time']
           if(node!=null){
             if(node!.sos) {
               createNotification("SOS", "Sos alert clicked on: ${DateTime.now().toIso8601String()}");
@@ -44,6 +48,17 @@ class DatabaseService with ListenableServiceMixin {
             // Coordinate coord2 = Coordinate(48.8566, 2.3522); // Paris, France
             //
             // double distance = calculateDistance(coord1, coord2)
+            if(boundary!=null) {
+              double distance = Geolocator.distanceBetween(
+                  boundary!.currentLat,
+                  boundary!.currentLong,
+                  node!.lat,
+                  node!.long) / 1000;
+              if(distance > boundary!.kilometer){
+                createNotification("Boundary Breach", "Child is out of the boundary set, Distance: $distance meter");
+                showNotification("Boundary Breach!");
+              }
+            }
 
             //
           }
@@ -65,6 +80,30 @@ class DatabaseService with ListenableServiceMixin {
 
   void showNotification(String message){
     _snackbarService.showSnackbar(message: message, title: "Notification");
+  }
+
+  String _childActivity = 'idle';
+  String get childActivity => _childActivity;
+  List<String> activities = ['idle', 'running', 'vehicle', 'walking'];
+  void setActivity(
+      DateTime lastSeen,
+      double speed,
+      double acl_x,
+      double acl_y,
+      double acl_z,
+      double gyro_x,
+      double gyro_y,
+      double gyro_z,
+      ){
+      DateTime now = DateTime.now();
+      final int difference = now.difference(lastSeen).inSeconds;
+      int timeDiff =  difference.abs();
+      if(speed > 10) {
+        _childActivity = activities[0];
+      } else if(timeDiff < 5) {
+        log.i(gyro_x);
+        log.i(gyro_y);
+      }
   }
 }
 

@@ -37,6 +37,8 @@ String path;
 #include <Adafruit_MPU6050.h>
 #include <Wire.h>
 Adafruit_MPU6050 mpu;
+#define IMU_SDA      38
+#define IMU_SCL      39
 
 HardwareSerial neo(1); // Use UART 1 on ESP32
 String lati = "";
@@ -44,19 +46,33 @@ String longi = "";
 float speed_kmph = 0.0;
 TinyGPSPlus gps;
 
-#define pushButton 8
+#define pushButton 35
 bool isSos = false;
 
-HardwareSerial sim800(1);
+HardwareSerial sim800(2);
 String simRead;
+
+//SPI DISPLAY
+#include <TFT_eSPI.h> // Graphics and font library for ST7735 driver chip
+#include <SPI.h>
+
+TFT_eSPI tft = TFT_eSPI();  // Invoke library, pins defined in User_Setup.h
 
 void setup()
 {
   Serial.begin(115200);
 
-  sim800.begin(9600, SERIAL_8N1, D0, D1);
+  tft.init();
+  tft.setRotation(4);
+  tft.fillScreen(TFT_BLACK);
+  tft.setTextColor(TFT_RED);
+  tft.setCursor (0, 5);
+  tft.setTextFont(3);
+  tft.print("FINDPIX");//tft.print(i);
 
-  neo.begin(9600, SERIAL_8N1, 3, 2);
+  sim800.begin(9600, SERIAL_8N1, 48, 16);
+
+  neo.begin(9600, SERIAL_8N1, 34, 33);
 
   pinMode(pushButton, INPUT);
 
@@ -64,8 +80,10 @@ void setup()
   delay(1000);
   Serial.println("Setupig MPU-6050 sensor");
 
-  while (!Serial)
-    delay(10);
+  Wire.begin(IMU_SDA, IMU_SCL);
+
+  // while (!Serial)
+  //   delay(10);
 
   // Initialize MPU6050
   if (!mpu.begin())
@@ -228,7 +246,7 @@ void loop()
 
   updateData(false, temp.temperature, buttonState, accel.acceleration.x, accel.acceleration.y, accel.acceleration.z, gyro.gyro.x, gyro.gyro.y, gyro.gyro.z);
 
-  updateSerial();A
+  updateSerial();
 }
 
 static void smartDelay(unsigned long ms)
