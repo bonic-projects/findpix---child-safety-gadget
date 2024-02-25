@@ -54,11 +54,13 @@ class DatabaseService with ListenableServiceMixin {
                   boundary!.currentLong,
                   node!.lat,
                   node!.long) / 1000;
-              if(distance > boundary!.kilometer){
+              if(distance > boundary!.boundaryMeters){
                 createNotification("Boundary Breach", "Child is out of the boundary set, Distance: $distance meter");
                 showNotification("Boundary Breach!");
               }
             }
+
+            setActivity(lastSeen: node!.lastSeen, speed: node!.speed, acl_x: node!.acl_x, acl_y: node!.acl_y, acl_z: node!.acl_z, gyro_x: node!.gyro_x, gyro_y: node!.gyro_y, gyro_z: node!.gyro_z);
 
             //
           }
@@ -72,8 +74,9 @@ class DatabaseService with ListenableServiceMixin {
 
   void createNotification(String title, String content) async {
     String? notId = await _firestoreService.generateNotificationId();
+     notId = await _firestoreService.generateNotificationId();
     if(notId!=null) {
-      _firestoreService.addNotificationToFirestore(AppNotification(title: title, description: content, time: DateTime.now(), id: notId,),);
+      _firestoreService.addNotificationToFirestore(AppNotification(title: title, description: content, time: DateTime.now(), id: notId),);
     }
   }
 
@@ -85,25 +88,58 @@ class DatabaseService with ListenableServiceMixin {
   String _childActivity = 'idle';
   String get childActivity => _childActivity;
   List<String> activities = ['idle', 'running', 'vehicle', 'walking'];
-  void setActivity(
-      DateTime lastSeen,
-      double speed,
-      double acl_x,
-      double acl_y,
-      double acl_z,
-      double gyro_x,
-      double gyro_y,
-      double gyro_z,
-      ){
+   double? acl_x_last;
+   double? acl_y_last;
+   double? acl_z_last;
+  void setActivity({
+    required DateTime lastSeen,
+    required double speed,
+    required double acl_x,
+    required double acl_y,
+    required double acl_z,
+    required double gyro_x,
+    required double gyro_y,
+    required double gyro_z,
+  }){
+    if(acl_x_last == null){
+      acl_x_last = acl_x;
+      acl_y_last = acl_y;
+      acl_z_last = acl_z;
+    }
+
       DateTime now = DateTime.now();
       final int difference = now.difference(lastSeen).inSeconds;
       int timeDiff =  difference.abs();
       if(speed > 10) {
-        _childActivity = activities[0];
+        _childActivity = activities[2];
       } else if(timeDiff < 5) {
-        log.i(gyro_x);
-        log.i(gyro_y);
+        // log.i("Data");
+        // log.i(gyro_x);//0.4
+        // log.i(gyro_y);//0.00
+        // log.i(gyro_z);//0.00
+        log.i("acl");
+        log.i(speed);
+        // log.i(acl_x_last! - acl_x);//
+        // log.i(acl_y_last! - acl_y);//
+        // log.i(acl_z_last! - acl_z);//
+        if(acl_x_last! - acl_x > 5 || acl_x_last! - acl_x < -5 || acl_y_last! - acl_y > 5 || acl_y_last! - acl_y < -5 || acl_z_last! - acl_z > 5 || acl_z_last! - acl_z < -5 ){
+          _childActivity = activities[1];
+        }
+        else if(gyro_x > 0.6 || gyro_x < -0.6 || gyro_y > 0.6 || gyro_y < -0.6 || gyro_z > 0.6 || gyro_z < -0.6 ){
+          _childActivity = activities[3];
+        } else {
+          _childActivity = activities[0];
+        }
+
+
+        acl_x_last = acl_x;
+        acl_y_last = acl_y;
+        acl_z_last = acl_z;
+      } else {
+        _childActivity = activities[0];
       }
+
+
   }
 }
 

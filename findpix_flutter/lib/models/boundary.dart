@@ -3,7 +3,7 @@ class Boundary {
   final String name;
   final DateTime startDateTime;
   final DateTime endDateTime;
-  final double kilometer;
+  final double boundaryMeters;
   final double currentLat;
   final double currentLong;
 
@@ -12,7 +12,7 @@ class Boundary {
     required this.name,
     required this.startDateTime,
     required this.endDateTime,
-    required this.kilometer,
+    required this.boundaryMeters,
     required this.currentLat,
     required this.currentLong,
   });
@@ -22,7 +22,7 @@ class Boundary {
         name = data['name'] ?? "nil",
         startDateTime = data['startDateTime'] != null ? data['startDateTime'].toDate() : DateTime.now(),
         endDateTime = data['endDateTime'] != null ? data['endDateTime'].toDate() : DateTime.now(),
-        kilometer = data['kilometer'] ?? 0.0,
+        boundaryMeters = data['boundaryMeters'] ?? 0.0,
         currentLat = data['currentLat'] ?? 0.0,
         currentLong = data['currentLong'] ?? 0.0;
 
@@ -32,7 +32,7 @@ class Boundary {
       'name': name,
       'startDateTime': startDateTime,
       'endDateTime': endDateTime,
-      'kilometer': kilometer,
+      'boundaryMeters': boundaryMeters,
       'currentLat': currentLat,
       'currentLong': currentLong,
     };

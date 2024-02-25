@@ -124,18 +124,13 @@ class Option extends StatelessWidget {
                   bottom: 0,
                   left: 0,
                   right: 0,
-                  child: Container(
-                    decoration: BoxDecoration(
-                        color: kcPrimaryColor.withOpacity(0.5),
-                        borderRadius: BorderRadius.circular(6)),
-                    child: Center(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Text(
-                          name.toUpperCase(),
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w500, fontSize: 15),
-                        ),
+                  child: Center(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        name.toUpperCase(),
+                        style: const TextStyle(
+                            fontWeight: FontWeight.w500, fontSize: 15),
                       ),
                     ),
                   ),

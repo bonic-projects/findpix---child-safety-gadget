@@ -12,20 +12,13 @@ class RealTimeViewModel extends ReactiveViewModel {
   final _firestoreServce = locator<FirestoreService>();
 
   DeviceReading? get node => _databaseService.node;
+  Boundary? get boundary => _firestoreServce.boundary;
 
   @override
   List<ListenableServiceMixin> get listenableServices =>
-      [_databaseService];
+      [_databaseService, _firestoreServce];
 
- void updateBoundary(Boundary boundary){
-   _firestoreServce.addBoundaryToFirestore(Boundary(
-     id: 'boundary',
-     name: boundary.name,
-     startDateTime: boundary.startDateTime,
-     endDateTime: boundary.endDateTime,
-     kilometer: boundary.kilometer,
-     currentLat: node!.lat,
-     currentLong: node!.long,
-   ));
+ void updateBoundary(Boundary boundaryin){
+   _firestoreServce.addBoundaryToFirestore(boundaryin);
  }
 }

@@ -30,6 +30,13 @@ String uid;
 // Databse
 String path;
 
+//====time
+#include "time.h"
+
+const char* ntpServer = "pool.ntp.org";
+const long  gmtOffset_sec = 19800;
+const int   daylightOffset_sec = 3600;
+
 //=============================================
 #include <HardwareSerial.h>
 #include <TinyGPS++.h>
@@ -67,7 +74,7 @@ void setup()
   tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_RED);
   tft.setCursor (0, 5);
-  tft.setTextFont(3);
+  tft.setTextFont(2);
   tft.print("FINDPIX");//tft.print(i);
 
   sim800.begin(9600, SERIAL_8N1, 48, 16);
@@ -116,6 +123,11 @@ void setup()
   Serial.print("Connected with IP: ");
   Serial.println(WiFi.localIP());
   Serial.println();
+
+  //Time
+  // Init and get the time
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  printLocalTime();
 
   // FIREBASE
   Serial.printf("Firebase Client v%s\n\n", FIREBASE_CLIENT_VERSION);
@@ -170,6 +182,7 @@ void updateData(bool isUpdate, float temp, bool isSos, float acl_x, float acl_y,
 {
   if (Firebase.ready() && (isUpdate || (millis() - sendDataPrevMillis > 1000 || sendDataPrevMillis == 0)))
   {
+    printLocalTime();
     sendDataPrevMillis = millis();
     FirebaseJson json;
     json.set("lat", lati);
@@ -309,4 +322,53 @@ void test_sim800_module()
   updateSerial();
   sim800.println("AT+CBC");
   updateSerial();
+}
+
+void printLocalTime(){
+  struct tm timeinfo;
+  if(!getLocalTime(&timeinfo)){
+    Serial.println("Failed to obtain time");
+    return;
+  }
+  Serial.println(&timeinfo, "%A, %B %d %Y %H:%M:%S");
+  Serial.print("Day of week: ");
+  Serial.println(&timeinfo, "%A");
+  Serial.print("Month: ");
+  Serial.println(&timeinfo, "%B");
+  Serial.print("Day of Month: ");
+  Serial.println(&timeinfo, "%d");
+  Serial.print("Year: ");
+  Serial.println(&timeinfo, "%Y");
+  Serial.print("Hour: ");
+  Serial.println(&timeinfo, "%H");
+  Serial.print("Hour (12 hour format): ");
+  Serial.println(&timeinfo, "%I");
+  Serial.print("Minute: ");
+  Serial.println(&timeinfo, "%M");
+  Serial.print("Second: ");
+  Serial.println(&timeinfo, "%S");
+
+  Serial.println("Time variables");
+  char timeHour[3];
+  strftime(timeHour,3, "%H", &timeinfo);
+  Serial.println(timeHour);
+  char timeMinute[3];
+  strftime(timeMinute,3, "%M", &timeinfo);
+  Serial.println(timeMinute);
+  char timeSecond[3];
+  strftime(timeSecond,3, "%S", &timeinfo);
+  Serial.println(timeSecond);
+  char timeWeekDay[10];
+  strftime(timeWeekDay,10, "%A", &timeinfo);
+  Serial.println(timeWeekDay);
+  Serial.println();
+
+  tft.setRotation(3);
+  tft.fillScreen(TFT_BLACK);
+  tft.setCursor(0, 0);
+  tft.setTextColor(TFT_WHITE); 
+  tft.setTextSize(2);
+  tft.println(F(""));
+  tft.println(F("FINDPIX"));
+  tft.print(timeHour);tft.print(":");tft.print(timeMinute);tft.print(":");tft.println(timeSecond);
 }

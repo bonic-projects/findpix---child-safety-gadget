@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
   google_maps_flutter: ^2.5.3
-  geolocator: ^11.0.0
+  geolocator: ^8.0.5
 
   #stacked
   stacked: ^3.4.0
